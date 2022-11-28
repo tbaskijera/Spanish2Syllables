@@ -1,7 +1,9 @@
+import re
+
 VOWELS = ["a", "e", "i", "o", "u"]
 STRONG_VOWELS = ["a", "e", "o"]
 WEAK_VOWELS = ["i", "u"]
-CONSONANTS = ["á", "é", "í", "ó", "ú", "ü", "x", "j", "t", "s", "c", "g", "l",
+CONSONANTS = ["á", "é", "í", "ó", "ú", "ü", "x", "j", "t", "s", "c", "g", "l",  # ["á", "é", "í", "ó", "ú", "ü"] samoglasnici ili ne?
               "f", "ll", "m", "r", "rr", "p", "h", "y", "ñ", "b", "d", "k", "n", "q", "v", "z", "ch", "w"]
 
 
@@ -21,10 +23,11 @@ def formalize(string):
         elif letter in CONSONANTS:
             formalized_string += "C"
         else:
-            formalized_string += letter
+            pass  # ???
     return formalized_string
 
 
+"""
 def rule_1(formalism):
     formatted = ""
     for count, letter in enumerate(formalism):
@@ -34,3 +37,20 @@ def rule_1(formalism):
         else:
             formatted += letter
     return formatted
+"""
+
+"""
+def rule_1(formalism):
+    print(re.sub('VCV', 'V-CV', formalism))
+"""
+
+
+def proccess(string):
+    # formalise
+    # rule1
+    # rule2
+    # ...
+    pass
+
+
+# rule_1("CVCV")
