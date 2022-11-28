@@ -7,6 +7,10 @@ CONSONANTS = ["á", "é", "í", "ó", "ú", "ü", "x", "j", "t", "s", "c", "g", 
               "f", "ll", "m", "r", "rr", "p", "h", "y", "ñ", "b", "d", "k", "n", "q", "v", "z", "ch", "w"]
 UNALLOWED = ["pr", "pl", "br", "bl", "fr",
              "fl", "gr", "gl", "cr", "cl", "dr", "tr"]
+STRONG_STRONG_VOWEL_PAIRS = ["ae", "ao", "ea", "eo", "oa", "oe"]
+WEAK_WEAK_VOWEL_PAIRS = ["iu", "ui"]
+STRONG_WEAK_VOWEL_PAIRS = ["ai", "ei", "oi", "au",
+                           "eu", "ou", "ia", "ie" "io", "ua", "ue", "u"]
 
 
 def is_vowel(char):
@@ -17,6 +21,14 @@ def is_consonant(char):
     return char == 'C'
 
 
+def check_offset(string, point):
+    count = 0
+    for i in range(point):
+        if string[i] == "-":
+            count += 1
+    return count
+
+
 def formalize(string):
     formalized_string = ""
     for letter in string:
@@ -25,7 +37,7 @@ def formalize(string):
         elif letter in CONSONANTS:
             formalized_string += "C"
         else:
-            pass  # ???
+            formalized_string += letter
     return formalized_string
 
 
@@ -47,26 +59,45 @@ def rule_1(formalism):
 
 
 def rule_2(formalism, string):
-    pattern = re.search("VCCV", formalism)
-    if pattern is not None:
-        pattern_start = pattern.start()
+    pattern = re.finditer("VCCV", formalism)
+    if pattern is None:
+        return formalism
+    for object in pattern:
+        pattern_start = object.start()
         consonant1 = pattern_start+1
         consonant2 = pattern_start+2
-        c_pair = string[consonant1] + string[consonant2]
+        offset = check_offset(formalism, pattern_start)
+        c_pair = string[consonant1 - offset] + string[consonant2 - offset]
         if c_pair in UNALLOWED:
-            return re.sub('VCCV', 'V-CCV', formalism)
+            formalism = re.sub('VCCV', 'V-CCV', formalism, 1)
         else:
-            return re.sub('VCCV', "VC-CV", formalism)
-    else:
+            formalism = re.sub('VCCV', "VC-CV", formalism, 1)
+    return formalism
+
+
+def rule_4(formalism, string):
+    pattern = re.finditer("VV", formalism)
+    if pattern is None:
         return formalism
+    for object in pattern:
+        pattern_start = object.start()
+        vowel1 = pattern_start
+        vowel2 = pattern_start+1
+        offset = check_offset(formalism, pattern_start)
+        v_pair = string[vowel1-offset] + string[vowel2-offset]
+        if v_pair in STRONG_STRONG_VOWEL_PAIRS:
+            formalism = re.sub("VV", "V-V", formalism, 1)
+    return formalism
 
 
 def process(string):
+
     formalism = formalize(string)
     formalism = rule_1(formalism)
     formalism = rule_2(formalism, string)
+    formalism = rule_4(formalism, string)
     print(formalism)
 
 
-process("casa")  # radi
-process("oprimo")  # radi
+process("oprimo")
+process("pelear")
