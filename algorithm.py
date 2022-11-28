@@ -5,6 +5,8 @@ STRONG_VOWELS = ["a", "e", "o"]
 WEAK_VOWELS = ["i", "u"]
 CONSONANTS = ["á", "é", "í", "ó", "ú", "ü", "x", "j", "t", "s", "c", "g", "l",  # ["á", "é", "í", "ó", "ú", "ü"] samoglasnici ili ne?
               "f", "ll", "m", "r", "rr", "p", "h", "y", "ñ", "b", "d", "k", "n", "q", "v", "z", "ch", "w"]
+UNALLOWED = ["pr", "pl", "br", "bl", "fr",
+             "fl", "gr", "gl", "cr", "cl", "dr", "tr"]
 
 
 def is_vowel(char):
@@ -39,18 +41,32 @@ def rule_1(formalism):
     return formatted
 """
 
-"""
+
 def rule_1(formalism):
-    print(re.sub('VCV', 'V-CV', formalism))
-"""
+    return re.sub('VCV', 'V-CV', formalism)
 
 
-def proccess(string):
-    # formalise
-    # rule1
-    # rule2
-    # ...
-    pass
+def rule_2(formalism, string):
+    pattern = re.search("VCCV", formalism)
+    if pattern is not None:
+        pattern_start = pattern.start()
+        consonant1 = pattern_start+1
+        consonant2 = pattern_start+2
+        c_pair = string[consonant1] + string[consonant2]
+        if c_pair in UNALLOWED:
+            return re.sub('VCCV', 'V-CCV', formalism)
+        else:
+            return re.sub('VCCV', "VC-CV", formalism)
+    else:
+        return formalism
 
 
-# rule_1("CVCV")
+def process(string):
+    formalism = formalize(string)
+    formalism = rule_1(formalism)
+    formalism = rule_2(formalism, string)
+    print(formalism)
+
+
+process("casa")  # radi
+process("oprimo")  # radi
