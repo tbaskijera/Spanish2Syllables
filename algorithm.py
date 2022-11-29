@@ -1,16 +1,16 @@
 import re
 
-VOWELS = ["a", "e", "i", "o", "u"]
-STRONG_VOWELS = ["a", "e", "o"]
-WEAK_VOWELS = ["i", "u"]
-CONSONANTS = ["á", "é", "í", "ó", "ú", "ü", "x", "j", "t", "s", "c", "g", "l",  # ["á", "é", "í", "ó", "ú", "ü"] samoglasnici ili ne?
+VOWELS = ["a", "á", "e", "é", "i", "í", "o", "ó", "u", "ú", "ü"]
+STRONG_VOWELS = ["a", "á", "e", "é", "o", "ó"]
+WEAK_VOWELS = ["i", "í", "u", "ú", "ü"]
+CONSONANTS = ["x", "j", "t", "s", "c", "g", "l",
               "f", "ll", "m", "r", "rr", "p", "h", "y", "ñ", "b", "d", "k", "n", "q", "v", "z", "ch", "w"]
 UNALLOWED = ["pr", "pl", "br", "bl", "fr",
              "fl", "gr", "gl", "cr", "cl", "dr", "tr"]
-STRONG_STRONG_VOWEL_PAIRS = ["ae", "ao", "ea", "eo", "oa", "oe"]
-WEAK_WEAK_VOWEL_PAIRS = ["iu", "ui"]
+STRONG_STRONG_VOWEL_PAIRS = ["ae", "ao", "ea", "eo", "oa", "oe"] # dodati parove sa naglascima
+WEAK_WEAK_VOWEL_PAIRS = ["iu", "ui"] # dodati parove sa naglascima
 STRONG_WEAK_VOWEL_PAIRS = ["ai", "ei", "oi", "au",
-                           "eu", "ou", "ia", "ie" "io", "ua", "ue", "u"]
+                           "eu", "ou", "ia", "ie" "io", "ua", "ue", "uo"] # dodati parove sa naglascima
 
 
 def is_vowel(char):
@@ -90,14 +90,39 @@ def rule_4(formalism, string):
     return formalism
 
 
-def process(string):
+def rule_5(formalism, string):
+    pattern = re.finditer("VV", formalism)
+    if pattern is None:
+        return formalism
+    for object in pattern:
+        pattern_start = object.start()
+        vowel1 = pattern_start
+        vowel2 = pattern_start+1
+        offset = check_offset(formalism, pattern_start)
+        v_pair = string[vowel1-offset] + string[vowel2-offset]
+        if v_pair in STRONG_WEAK_VOWEL_PAIRS:
+            formalism = re.sub("VV", "VV", formalism, 1)
+    return formalism
 
+
+def process(string):
+# VAZNO VAZNO!! u rule bilo koji pronade prvi pattern npr VV i rastavi ga na V-V,
+# ali ako se pojavi jos jednom u istoj rijeci onda ga ne nade
     formalism = formalize(string)
     formalism = rule_1(formalism)
-    formalism = rule_2(formalism, string)
+    #formalism = rule_2(formalism, string)
+    formalism1 = rule_2(formalism, string) # ovo popravlja problem sa agrandar isto i sa europa
+    formalism1 = rule_2(formalism1, string)
+    formalism = rule_1(formalism1) 
     formalism = rule_4(formalism, string)
+    formalism = rule_4(formalism, string) # rjesava problem aereo
+    formalism = rule_5(formalism, string)
     print(formalism)
 
 
 process("oprimo")
 process("pelear")
+
+process("agrandar")
+process("aéreo")
+process("europa")
