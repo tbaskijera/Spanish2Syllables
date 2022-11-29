@@ -7,12 +7,13 @@ CONSONANTS = ["x", "j", "t", "s", "c", "g", "l",
               "f", "ll", "m", "r", "rr", "p", "h", "y", "ñ", "b", "d", "k", "n", "q", "v", "z", "ch", "w"]
 UNALLOWED = ["pr", "pl", "br", "bl", "fr",
              "fl", "gr", "gl", "cr", "cl", "dr", "tr"]
-STRONG_STRONG_VOWEL_PAIRS = ["ae", "ao", "ea", "eo", "oa", "oe"] # dodati parove sa naglascima
-WEAK_WEAK_VOWEL_PAIRS = ["iu", "ui"] # dodati parove sa naglascima
+STRONG_STRONG_VOWEL_PAIRS = ["ae", "ao", "ea", "eo", "oa", "oe"] # dali treba dodati parove sa naglascima
+WEAK_WEAK_VOWEL_PAIRS = ["iu", "ui"]
 STRONG_WEAK_VOWEL_PAIRS = ["ai", "ei", "oi", "au",
-                           "eu", "ou", "ia", "ie" "io", "ua", "ue", "uo"] # dodati parove sa naglascima
+                           "eu", "ou", "ia", "ie" "io", "ua", "ue", "uo"] # dali treba dodati parove sa naglascima
 WEAK_STRONG_WEAK_VOWEL_TRIFTONG = ["iai", "iái","iau", "iáu", "iei", "iéi", "ieu", "iéu", "ioi", "iói", "iou", "ióu",
                                    "uai", "uái", "uau", "uáu", "uei", "uéi", "ueu", "uéu", "uoi", "uói", "uou", "uóu"]                          
+INSEPARABLE = ["ns", "bs", "rs", "ps", "gs", "cs", "ks", "ds", "ts", "ms", "ls", "vs", "fs"]
 
 
 def is_vowel(char):
@@ -74,6 +75,25 @@ def rule_2(formalism, string):
             formalism = re.sub('VCCV', 'V-CCV', formalism, 1)
         else:
             formalism = re.sub('VCCV', "VC-CV", formalism, 1)
+    return formalism
+
+
+def rule_3(formalism, string):
+    pattern = re.finditer("VCCCV", formalism)
+    if pattern is None:
+        return formalism
+    for object in pattern:
+        pattern_start = object.start()
+        consonant1 = pattern_start+1
+        consonant2 = pattern_start+2
+        consonant3 = pattern_start+3
+        offset = check_offset(formalism, pattern_start)
+        end_two = string[consonant2 - offset] + string[consonant3 - offset]
+        first_two = string[consonant1 - offset] + string[consonant2 - offset]
+        if end_two in UNALLOWED:
+            formalism = re.sub('VCCCV', 'VC-CCV', formalism, 1)
+        elif first_two in INSEPARABLE:
+            formalism = re.sub('VCCCV', "VCC-CV", formalism, 1)
     return formalism
 
 
@@ -149,6 +169,7 @@ def process(string):
     formalism1 = rule_2(formalism, string) # ovo popravlja problem sa agrandar isto i sa europa
     formalism1 = rule_2(formalism1, string)
     formalism = rule_1(formalism1) 
+    formalism = rule_3(formalism, string)
     formalism = rule_4(formalism, string)
     formalism = rule_4(formalism, string) # rjesava problem aereo
     formalism = rule_5(formalism, string)
@@ -163,4 +184,4 @@ process("pelear")
 process("agrandar")
 process("aéreo")
 process("europa")
-process("empleados")
+process("perspectiva")
