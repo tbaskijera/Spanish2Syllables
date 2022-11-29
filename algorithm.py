@@ -6,14 +6,20 @@ WEAK_VOWELS = ["i", "u"]
 CONSONANTS = ["x", "j", "t", "s", "c", "g", "l",
               "f", "ll", "m", "r", "rr", "p", "h", "y", "ñ", "b", "d", "k", "n", "q", "v", "z", "ch", "w"]
 UNALLOWED = ["pr", "pl", "br", "bl", "fr",
-             "fl", "gr", "gl", "cr", "cl", "dr", "tr"]
+             "fl", "gr", "gl", "cr", "cl", "dr", "tr", "tl"]
 STRONG_STRONG_VOWEL_PAIRS = ["ae", "ao", "ea", "eo", "oa", "oe"] # dali treba dodati parove sa naglascima
 WEAK_WEAK_VOWEL_PAIRS = ["iu", "ui"]
 STRONG_WEAK_VOWEL_PAIRS = ["ai", "ei", "oi", "au",
                            "eu", "ou", "ia", "ie" "io", "ua", "ue", "uo"] # dali treba dodati parove sa naglascima
 WEAK_STRONG_WEAK_VOWEL_TRIFTONG = ["iai", "iái","iau", "iáu", "iei", "iéi", "ieu", "iéu", "ioi", "iói", "iou", "ióu",
-                                   "uai", "uái", "uau", "uáu", "uei", "uéi", "ueu", "uéu", "uoi", "uói", "uou", "uóu"]                          
+                                   "uai", "uái", "uau", "uáu", "uei", "uéi", "ueu", "uéu", "uoi", "uói", "uou", "uóu"]                   
 INSEPARABLE = ["ns", "bs", "rs", "ps", "gs", "cs", "ks", "ds", "ts", "ms", "ls", "vs", "fs"]
+
+test_list = ["casa", "oprimo", "obrero",  "aflojar", "cafre", "hablando", "agrandar", "aglutinar", 
+            "acróbata", "aclamar", "cuadro", "cuatro", "atlas", "atlalilco", "inseparable", "artista",
+            "comedlo", "ponedla", "empleados", "englobar", "constitución", "instaurar", "obstinado",
+            "instalar", "perspectiva", "aéreo", "pelear", "leo", "aire", "europa", "ásia", "cuidado",
+            "ruidoso", "triunfante", "bioinformática", "radioisótopo", "asociáis", "buey", "había", "país", "reúno"]
 
 
 def is_vowel(char):
@@ -178,10 +184,8 @@ def process(string):
     print(formalism)
 
 
-process("oprimo")
-process("pelear")
+def test(list):
+    for item in list:
+        process(item)
 
-process("agrandar")
-process("aéreo")
-process("europa")
-process("perspectiva")
+test(test_list)
