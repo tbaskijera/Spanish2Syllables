@@ -11,6 +11,8 @@ STRONG_STRONG_VOWEL_PAIRS = ["ae", "ao", "ea", "eo", "oa", "oe"] # dodati parove
 WEAK_WEAK_VOWEL_PAIRS = ["iu", "ui"] # dodati parove sa naglascima
 STRONG_WEAK_VOWEL_PAIRS = ["ai", "ei", "oi", "au",
                            "eu", "ou", "ia", "ie" "io", "ua", "ue", "uo"] # dodati parove sa naglascima
+WEAK_STRONG_WEAK_VOWEL_TRIFTONG = ["iai", "iái","iau", "iáu", "iei", "iéi", "ieu", "iéu", "ioi", "iói", "iou", "ióu",
+                                   "uai", "uái", "uau", "uáu", "uei", "uéi", "ueu", "uéu", "uoi", "uói", "uou", "uóu"]                          
 
 
 def is_vowel(char):
@@ -120,6 +122,21 @@ def rule_6(formalism, string):
     return formalism
 
 
+def rule_7(formalism, string):
+    pattern = re.finditer("VVV", formalism)
+    if pattern is None:
+        return formalism
+    for object in pattern:
+        pattern_start = object.start()
+        vowel1 = pattern_start
+        vowel2 = pattern_start+1
+        offset = check_offset(formalism, pattern_start)
+        v_pair = string[vowel1-offset] + string[vowel2-offset]
+        if v_pair in WEAK_STRONG_WEAK_VOWEL_TRIFTONG:
+            formalism = re.sub("VVV", "VVV", formalism, 1)
+    return formalism
+
+
 def process(string):
 # VAZNO VAZNO!! u rule bilo koji pronade prvi pattern npr VV i rastavi ga na V-V,
 # ali ako se pojavi jos jednom u istoj rijeci onda ga ne nade
@@ -133,6 +150,7 @@ def process(string):
     formalism = rule_4(formalism, string) # rjesava problem aereo
     formalism = rule_5(formalism, string)
     formalism = rule_6(formalism, string)
+    formalism = rule_7(formalism, string)
     print(formalism)
 
 
@@ -142,4 +160,4 @@ process("pelear")
 process("agrandar")
 process("aéreo")
 process("europa")
-process("triunfante")
+process("buey")
