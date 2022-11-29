@@ -105,6 +105,21 @@ def rule_5(formalism, string):
     return formalism
 
 
+def rule_6(formalism, string):
+    pattern = re.finditer("VV", formalism)
+    if pattern is None:
+        return formalism
+    for object in pattern:
+        pattern_start = object.start()
+        vowel1 = pattern_start
+        vowel2 = pattern_start+1
+        offset = check_offset(formalism, pattern_start)
+        v_pair = string[vowel1-offset] + string[vowel2-offset]
+        if v_pair in WEAK_WEAK_VOWEL_PAIRS:
+            formalism = re.sub("VV", "VV", formalism, 1)
+    return formalism
+
+
 def process(string):
 # VAZNO VAZNO!! u rule bilo koji pronade prvi pattern npr VV i rastavi ga na V-V,
 # ali ako se pojavi jos jednom u istoj rijeci onda ga ne nade
@@ -117,6 +132,7 @@ def process(string):
     formalism = rule_4(formalism, string)
     formalism = rule_4(formalism, string) # rjesava problem aereo
     formalism = rule_5(formalism, string)
+    formalism = rule_6(formalism, string)
     print(formalism)
 
 
@@ -126,3 +142,4 @@ process("pelear")
 process("agrandar")
 process("aéreo")
 process("europa")
+process("triunfante")
