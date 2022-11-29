@@ -1,8 +1,8 @@
 import re
 
 VOWELS = ["a", "á", "e", "é", "i", "í", "o", "ó", "u", "ú", "ü"]
-STRONG_VOWELS = ["a", "á", "e", "é", "o", "ó"]
-WEAK_VOWELS = ["i", "í", "u", "ú", "ü"]
+STRONG_VOWELS = ["a", "á", "e", "é", "o", "ó", "í", "ú", "ü"]
+WEAK_VOWELS = ["i", "u"]
 CONSONANTS = ["x", "j", "t", "s", "c", "g", "l",
               "f", "ll", "m", "r", "rr", "p", "h", "y", "ñ", "b", "d", "k", "n", "q", "v", "z", "ch", "w"]
 UNALLOWED = ["pr", "pl", "br", "bl", "fr",
@@ -137,6 +137,9 @@ def rule_7(formalism, string):
     return formalism
 
 
+# rule_8 je odraden
+
+
 def process(string):
 # VAZNO VAZNO!! u rule bilo koji pronade prvi pattern npr VV i rastavi ga na V-V,
 # ali ako se pojavi jos jednom u istoj rijeci onda ga ne nade
@@ -160,4 +163,4 @@ process("pelear")
 process("agrandar")
 process("aéreo")
 process("europa")
-process("buey")
+process("empleados")
