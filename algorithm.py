@@ -14,6 +14,8 @@ STRONG_WEAK_VOWEL_PAIRS = ["ai", "ei", "oi", "au",
 WEAK_STRONG_WEAK_VOWEL_TRIFTONG = ["iai", "iái","iau", "iáu", "iei", "iéi", "ieu", "iéu", "ioi", "iói", "iou", "ióu",
                                    "uai", "uái", "uau", "uáu", "uei", "uéi", "ueu", "uéu", "uoi", "uói", "uou", "uóu"]                   
 INSEPARABLE = ["ns", "bs", "rs", "ps", "gs", "cs", "ks", "ds", "ts", "ms", "ls", "vs", "fs"]
+STRONG_WEAK_TO_STRONG_VOWEL_PAIRS = ["aí", "aú", "aü", "eí", "eú", "eü", "oí", "oú", "oü",
+                                    "ía", "úa", "üa", "íe", "úe", "üe", "ío", "úo", "üo"]
 
 test_list = ["casa", "oprimo", "obrero",  "aflojar", "cafre", "hablando", "agrandar", "aglutinar", 
             "acróbata", "aclamar", "cuadro", "cuatro", "atlas", "atlalilco", "inseparable", "artista",
@@ -163,7 +165,19 @@ def rule_7(formalism, string):
     return formalism
 
 
-# rule_8 je odraden
+def rule_8(formalism, string):
+    pattern = re.finditer("VV", formalism)
+    if pattern is None:
+        return formalism
+    for object in pattern:
+        pattern_start = object.start()
+        vowel1 = pattern_start
+        vowel2 = pattern_start+1
+        offset = check_offset(formalism, pattern_start)
+        v_pair = string[vowel1-offset] + string[vowel2-offset]
+        if v_pair in STRONG_WEAK_TO_STRONG_VOWEL_PAIRS:
+            formalism = re.sub("VV", "V-V", formalism, 1)
+    return formalism
 
 
 def process(string):
@@ -181,11 +195,23 @@ def process(string):
     formalism = rule_5(formalism, string)
     formalism = rule_6(formalism, string)
     formalism = rule_7(formalism, string)
+    formalism = rule_8(formalism, string)
     print(formalism)
 
 
 def test(list):
     for item in list:
+        print("procesira se ", item, ": ")
         process(item)
 
 test(test_list)
+
+process("inseparable")
+process("inssparable") # ovaj radi dobro jer ima suglasnik umjesto e
+
+
+def input_text():
+    text = input("Unesi tekst koji želiš rastaviti na slogove: ")
+    return text
+
+process(input_text())
