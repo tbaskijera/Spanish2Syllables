@@ -1,4 +1,5 @@
 import re
+import sys
 
 VOWELS = ["a", "á", "e", "é", "i", "í", "o", "ó", "u", "ú", "ü"]
 STRONG_VOWELS = ["a", "á", "e", "é", "o", "ó", "í", "ú", "ü"]
@@ -181,37 +182,125 @@ def rule_8(formalism, string):
 
 
 def process(string):
-# VAZNO VAZNO!! u rule bilo koji pronade prvi pattern npr VV i rastavi ga na V-V,
-# ali ako se pojavi jos jednom u istoj rijeci onda ga ne nade
     formalism = formalize(string)
     formalism = rule_1(formalism)
     #formalism = rule_2(formalism, string)
-    formalism1 = rule_2(formalism, string) # ovo popravlja problem sa agrandar isto i sa europa
+    formalism1 = rule_2(formalism, string)
     formalism1 = rule_2(formalism1, string)
     formalism = rule_1(formalism1) 
     formalism = rule_3(formalism, string)
     formalism = rule_4(formalism, string)
-    formalism = rule_4(formalism, string) # rjesava problem aereo
+    formalism = rule_4(formalism, string)
     formalism = rule_5(formalism, string)
     formalism = rule_6(formalism, string)
     formalism = rule_7(formalism, string)
     formalism = rule_8(formalism, string)
-    print(formalism)
+    #print(formalism)
+    return formalism
 
 
-def test(list):
-    for item in list:
-        print("procesira se ", item, ": ")
-        process(item)
+# def test(list):
+#     for item in list:
+#         print("procesira se ", item, ": ")
+#         process(item)
 
-test(test_list)
+# test(test_list)
 
-process("inseparable")
-process("inssparable") # ovaj radi dobro jer ima suglasnik umjesto e
+# process("inseparable")
+# process("inssparable") # ovaj radi dobro jer ima suglasnik umjesto e
 
 
+# def input_text():
+#     text = input("Unesi tekst koji želiš rastaviti na slogove: ")
+#     return text
+
+# process(input_text())
+
+
+
+import sys
+from PyQt5.QtWidgets import *
+from PyQt5 import QtGui
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+
+class ScrollLabel(QScrollArea):
+ 
+    def __init__(self, *args, **kwargs):
+        QScrollArea.__init__(self, *args, **kwargs)
+        self.setWidgetResizable(True)
+        content = QWidget(self)
+        self.setWidget(content)
+        lay = QVBoxLayout(content)
+        self.label = QLabel(content)
+        self.label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.label.setWordWrap(True)
+        lay.addWidget(self.label)
+ 
+    def setText(self, text):
+        self.label.setText(text)
+
+ 
 def input_text():
-    text = input("Unesi tekst koji želiš rastaviti na slogove: ")
-    return text
+    text, pressed = QInputDialog.getText(win, "Input Text", "Text: ", QLineEdit.Normal, "")
+    if pressed:
+        label.setText(process(text))
+        label.adjustSize()
+ 
+def dialog():
+    file, check = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "Text Files (*.txt)")
+    if check:
+        f = open(file)
+        proc = f.read()
+        label2.setText(process(proc))
+ 
+app = QApplication(sys.argv)
+win = QMainWindow()
+win.setGeometry(200,200,200,200)
 
-process(input_text())
+button = QPushButton(win)
+button.setText("Add text")
+
+button.setStyleSheet("QPushButton{background-color: lightcoral;}"
+                     "QPushButton::hover {background-color: coral;};")
+button.clicked.connect(input_text)
+button.move(50,110)
+
+button2 = QPushButton(win)
+button2.setText("Add file")
+button2.setStyleSheet("QPushButton{background-color: lightcoral;}"
+                     "QPushButton::hover {background-color: coral;};")
+button2.clicked.connect(dialog)
+button2.move(50,250)
+
+label = QLabel(win)
+label.setText("Empty Text")
+label.move(50,150)
+
+label22 = QLabel(win)
+label22.setText("Click on <strong>'Add file'</strong> button to upload a file that contains the text that you want to split into syllables.")
+label22.move(50, 230)
+label22.adjustSize()
+
+label2 = ScrollLabel(win)
+label2.setGeometry(50, 300, 900, 400)
+
+label3 = QLabel("Arial", win)
+label3.setText("Spanish2Syllables")
+label3.setFont(QFont("Arial", 20))
+label3.setStyleSheet("font-weight: bold")
+label3.adjustSize()
+label3.move(360, 40)
+
+win.show()
+win.setWindowIcon(QtGui.QIcon('icon.jpg'))
+win.setWindowTitle("Spanish2Syllables") 
+# win.setStyleSheet("background-color: yellow;")
+win.resize(1000, 750)
+sys.exit(app.exec_())
+
+
+
+
+
+
