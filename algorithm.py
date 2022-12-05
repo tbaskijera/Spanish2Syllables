@@ -53,6 +53,19 @@ def formalize(string):
     return formalized_string
 
 
+def deformalize(string1, string2):
+    list_of_char = []
+    br = 0
+    for i in string1:
+        if i == "-":
+            list_of_char.append(" ")
+        else:
+            list_of_char.append(string2[br])
+            br += 1
+    deformalized_string = ''.join(list_of_char)
+    return deformalized_string
+
+
 """
 def rule_1(formalism):
     formatted = ""
@@ -196,7 +209,9 @@ def process(string):
     formalism = rule_7(formalism, string)
     formalism = rule_8(formalism, string)
     #print(formalism)
-    return formalism
+    deformalism = deformalize(formalism, string)
+    #return formalism
+    return deformalism
 
 
 # def test(list):
@@ -205,9 +220,6 @@ def process(string):
 #         process(item)
 
 # test(test_list)
-
-# process("inseparable")
-# process("inssparable") # ovaj radi dobro jer ima suglasnik umjesto e
 
 
 # def input_text():
@@ -218,11 +230,10 @@ def process(string):
 
 
 
-import sys
-from PyQt5.QtWidgets import *
 from PyQt5 import QtGui
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 class ScrollLabel(QScrollArea):
  
@@ -247,6 +258,7 @@ def input_text():
         label.setText(process(text))
         label.adjustSize()
  
+
 def dialog():
     file, check = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "Text Files (*.txt)")
     if check:
@@ -254,13 +266,13 @@ def dialog():
         proc = f.read()
         label2.setText(process(proc))
  
+
 app = QApplication(sys.argv)
 win = QMainWindow()
 win.setGeometry(200,200,200,200)
 
 button = QPushButton(win)
 button.setText("Add text")
-
 button.setStyleSheet("QPushButton{background-color: lightcoral;}"
                      "QPushButton::hover {background-color: coral;};")
 button.clicked.connect(input_text)
@@ -298,9 +310,4 @@ win.setWindowTitle("Spanish2Syllables")
 # win.setStyleSheet("background-color: yellow;")
 win.resize(1000, 750)
 sys.exit(app.exec_())
-
-
-
-
-
 
