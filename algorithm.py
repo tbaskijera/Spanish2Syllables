@@ -210,7 +210,7 @@ def process(string):
     formalism = rule_8(formalism, string)
     #print(formalism)
     deformalism = deformalize(formalism, string)
-    #return formalism
+    # return formalism
     return deformalism
 
 
@@ -260,11 +260,15 @@ def input_text():
  
 
 def dialog():
+    new_list = []
     file, check = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "Text Files (*.txt)")
     if check:
-        f = open(file)
-        proc = f.read()
-        label2.setText(process(proc))
+        f = open(file, 'r', encoding='utf-8')
+        for line in f:       
+            for word in line.split(): 
+                new_list.append(process(word))
+        new_string = ''.join(new_list)        
+        label2.setText(new_string)
  
 
 app = QApplication(sys.argv)
