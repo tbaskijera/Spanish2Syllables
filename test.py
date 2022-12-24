@@ -76,4 +76,4 @@ split_list = split_element_from_list()
 print(len(split_list))
 
 create_two_list(split_list)
-print("Postotak točnosti je:", round(average(split_list), 3))
+print("Postotak točnosti je:", round(average(split_list), 4))
