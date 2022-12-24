@@ -62,18 +62,16 @@ def create_two_list(list):
         if list_syllables[i] == list_syllables_compare[i]:
             true_counter += 1
         else:
-            print("Krivi je:", list_syllables[i], " --- ", list_syllables_compare[i] )
-    return true_counter
+            print("Krivi je:", list_syllables[i], " --- ", list_syllables_compare[i])
+    return true_counter, list_syllables_compare
 
 
 def average(list):
-    return (create_two_list(list)/(len(list)))*100
+    return_tuple = create_two_list(list)
+    return (return_tuple[0]/(len(return_tuple[1])))*100
 
 
 convert_docx2txt('SPANISH_primjeri.docx')
 delete_blank_line('output.txt')
 split_list = split_element_from_list()
-print(len(split_list))
-
-create_two_list(split_list)
 print("Postotak točnosti je:", round(average(split_list), 4))
