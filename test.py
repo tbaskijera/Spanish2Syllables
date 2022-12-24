@@ -25,10 +25,21 @@ def split_element_from_list():
     new_list = []
     f = open('output.txt', 'r', encoding='utf-8')
     for line in f:
-        new_list.append(re.split('–|-', line))
+        new_list.append(re.split(' – | - ', line))
     # join sublists - list
     new_list = sum(new_list, [])
     return new_list
+
+
+def clean_list(list):
+    clean_list = []
+    for el in list:
+        new_list=[]
+        for i in el:
+            if (i.isalpha()) == True or i == "\"" or i ==".":
+                new_list.append(i)
+        clean_list.append(''.join(new_list))
+    return clean_list
 
 
 def create_two_list(list):
@@ -42,27 +53,27 @@ def create_two_list(list):
             list_words_for_test.append(list[i])
         else:
             list_syllables_compare.append(list[i])
-    
+    list_syllables_compare = clean_list(list_syllables_compare)
     for item in list_words_for_test:
         add = process(item)
         list_syllables.append(add.replace(" ", "."))
 
     for i in range(0, len(list_syllables)):
-        if list_syllables[i] == list_syllables_compare [i]:
+        if list_syllables[i] == list_syllables_compare[i]:
             true_counter += 1
-    
-    # ove dvije liste treba urediti - ocistiti od nepotrebnih razmaka, \n, ., "", i sl.
-    print(list_syllables)
-    print(list_syllables_compare)
+        else:
+            print("Krivi je:", list_syllables[i], " --- ", list_syllables_compare[i] )
     return true_counter
 
+
 def average(list):
-    return create_two_list(list)/(len(list))  
+    return (create_two_list(list)/(len(list)))*100
 
 
 convert_docx2txt('SPANISH_primjeri.docx')
 delete_blank_line('output.txt')
 split_list = split_element_from_list()
+print(len(split_list))
 
 create_two_list(split_list)
-print("Postotak točnosti je:", average(split_list))
+print("Postotak točnosti je:", round(average(split_list), 3))
