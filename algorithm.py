@@ -5,12 +5,10 @@ STRONG_VOWELS = ["a", "á", "e", "é", "o", "ó", "í", "ú", "ü"]
 WEAK_VOWELS = ["i", "u"]
 CONSONANTS = ["x", "j", "t", "s", "c", "g", "l",
               "f", "ll", "m", "r", "rr", "p", "h", "y", "ñ", "b", "d", "k", "n", "q", "v", "z", "ch", "w"]
-UNALLOWED = ["pr", "pl", "br", "bl", "fr",
-             "fl", "gr", "gl", "cr", "cl", "dr", "tr", "tl"]
+UNALLOWED = ["pr", "pl", "br", "bl", "fr", "fl", "gr", "gl", "cr", "cl", "dr", "tr", "tl"]
 STRONG_STRONG_VOWEL_PAIRS = ["ae", "ao", "ea", "eo", "oa", "oe"] # dali treba dodati parove sa naglascima
 WEAK_WEAK_VOWEL_PAIRS = ["iu", "ui"]
-STRONG_WEAK_VOWEL_PAIRS = ["ai", "ei", "oi", "au",
-                           "eu", "ou", "ia", "ie" "io", "ua", "ue", "uo"] # dali treba dodati parove sa naglascima
+STRONG_WEAK_VOWEL_PAIRS = ["ai", "ei", "oi", "au", "eu", "ou", "ia", "ie" "io", "ua", "ue", "uo"] # dali treba dodati parove sa naglascima
 WEAK_STRONG_WEAK_VOWEL_TRIFTONG = ["iai", "iái","iau", "iáu", "iei", "iéi", "ieu", "iéu", "ioi", "iói", "iou", "ióu",
                                    "uai", "uái", "uau", "uáu", "uei", "uéi", "ueu", "uéu", "uoi", "uói", "uou", "uóu"]                   
 INSEPARABLE = ["ns", "bs", "rs", "ps", "gs", "cs", "ks", "ds", "ts", "ms", "ls", "vs", "fs"]
@@ -193,13 +191,30 @@ def rule_8(formalism, string):
     return formalism
 
 
+def additional_rule_2(formalism, string):
+    pattern = re.finditer("VCC", formalism)
+    if pattern is None:
+            return formalism
+    for object in pattern:
+        pattern_start = object.start()
+        consonant1 = pattern_start+1
+        consonant2 = pattern_start+2
+        offset = check_offset(formalism, pattern_start)
+        c_pair = string[consonant1 - offset] + string[consonant2 - offset]
+        if c_pair in UNALLOWED:
+            formalism = re.sub("VCC", "V-CC", formalism, 1)
+        else:
+            formalism = re.sub("VCC", "VC-C", formalism, 1)
+    return formalism
+
+
 def process(string):
     formalism = formalize(string)
     formalism = rule_1(formalism)
     #formalism = rule_2(formalism, string)
     formalism1 = rule_2(formalism, string)
     formalism1 = rule_2(formalism1, string)
-    formalism = rule_1(formalism1) 
+    formalism = rule_1(formalism1)
     formalism = rule_3(formalism, string)
     formalism = rule_4(formalism, string)
     formalism = rule_4(formalism, string)
@@ -207,6 +222,8 @@ def process(string):
     formalism = rule_6(formalism, string)
     formalism = rule_7(formalism, string)
     formalism = rule_8(formalism, string)
+    if formalism[-4:] == "VCC\"" or formalism1[-4] == "VCC\"":
+        formalism = additional_rule_2(formalism1, string)
     #print(formalism)
     deformalism = deformalize(formalism, string)
     # return formalism
@@ -226,91 +243,4 @@ def process(string):
 #     return text
 
 # process(input_text())
-
-
-
-# from PyQt5 import QtGui
-# from PyQt5.QtGui import *
-# from PyQt5.QtCore import *
-# from PyQt5.QtWidgets import *
-
-# class ScrollLabel(QScrollArea):
- 
-#     def __init__(self, *args, **kwargs):
-#         QScrollArea.__init__(self, *args, **kwargs)
-#         self.setWidgetResizable(True)
-#         content = QWidget(self)
-#         self.setWidget(content)
-#         lay = QVBoxLayout(content)
-#         self.label = QLabel(content)
-#         self.label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
-#         self.label.setWordWrap(True)
-#         lay.addWidget(self.label)
- 
-#     def setText(self, text):
-#         self.label.setText(text)
-
- 
-# def input_text():
-#     text, pressed = QInputDialog.getText(win, "Input Text", "Text: ", QLineEdit.Normal, "")
-#     if pressed:
-#         label.setText(process(text))
-#         label.adjustSize()
- 
-
-# def dialog():
-#     new_list = []
-#     file, check = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "Text Files (*.txt)")
-#     if check:
-#         f = open(file, 'r', encoding='utf-8')
-#         for line in f:       
-#             for word in line.split(): 
-#                 new_list.append(process(word))
-#         new_string = ''.join(new_list)        
-#         label2.setText(new_string)
- 
-
-# app = QApplication(sys.argv)
-# win = QMainWindow()
-# win.setGeometry(200,200,200,200)
-
-# button = QPushButton(win)
-# button.setText("Add text")
-# button.setStyleSheet("QPushButton{background-color: lightcoral;}"
-#                      "QPushButton::hover {background-color: coral;};")
-# button.clicked.connect(input_text)
-# button.move(50,110)
-
-# button2 = QPushButton(win)
-# button2.setText("Add file")
-# button2.setStyleSheet("QPushButton{background-color: lightcoral;}"
-#                      "QPushButton::hover {background-color: coral;};")
-# button2.clicked.connect(dialog)
-# button2.move(50,250)
-
-# label = QLabel(win)
-# label.setText("Empty Text")
-# label.move(50,150)
-
-# label22 = QLabel(win)
-# label22.setText("Click on <strong>'Add file'</strong> button to upload a file that contains the text that you want to split into syllables.")
-# label22.move(50, 230)
-# label22.adjustSize()
-
-# label2 = ScrollLabel(win)
-# label2.setGeometry(50, 300, 900, 400)
-
-# label3 = QLabel("Arial", win)
-# label3.setText("Spanish2Syllables")
-# label3.setFont(QFont("Arial", 20))
-# label3.setStyleSheet("font-weight: bold")
-# label3.adjustSize()
-# label3.move(360, 40)
-
-# win.show()
-# win.setWindowIcon(QtGui.QIcon('icon.jpg'))
-# win.setWindowTitle("Spanish2Syllables") 
-# # win.setStyleSheet("background-color: yellow;")
-# win.resize(1000, 750)
-# sys.exit(app.exec_())
 
