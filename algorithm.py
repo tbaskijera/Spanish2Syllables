@@ -6,7 +6,7 @@ WEAK_VOWELS = ["i", "u"]
 CONSONANTS = ["x", "j", "t", "s", "c", "g", "l",
               "f", "ll", "m", "r", "rr", "p", "h", "y", "ñ", "b", "d", "k", "n", "q", "v", "z", "ch", "w"]
 UNALLOWED = ["pr", "pl", "br", "bl", "fr", "fl", "gr", "gl", "cr", "cl", "dr", "tr", "tl"]
-STRONG_STRONG_VOWEL_PAIRS = ["ae", "ao", "ea", "eo", "oa", "oe"] # dali treba dodati parove sa naglascima
+STRONG_STRONG_VOWEL_PAIRS = ["ae", "ao", "ea", "eo", "oa", "oe", "óa"] # dali treba dodati parove sa naglascima
 WEAK_WEAK_VOWEL_PAIRS = ["iu", "ui"]
 STRONG_WEAK_VOWEL_PAIRS = ["ai", "ei", "oi", "au", "eu", "ou", "ia", "ie" "io", "ua", "ue", "uo"] # dali treba dodati parove sa naglascima
 WEAK_STRONG_WEAK_VOWEL_TRIFTONG = ["iai", "iái","iau", "iáu", "iei", "iéi", "ieu", "iéu", "ioi", "iói", "iou", "ióu",
@@ -126,8 +126,10 @@ def rule_4(formalism, string):
         vowel2 = pattern_start+1
         offset = check_offset(formalism, pattern_start)
         v_pair = string[vowel1-offset] + string[vowel2-offset]
-        if v_pair in STRONG_STRONG_VOWEL_PAIRS:
+        if v_pair!="ue" and v_pair in STRONG_STRONG_VOWEL_PAIRS:
             formalism = re.sub("VV", "V-V", formalism, 1)
+        else:
+            formalism = re.sub("VV", "VV", formalism, 1)
     return formalism
 
 
@@ -210,6 +212,7 @@ def additional_rule_2(formalism, string):
 
 def process(string):
     formalism = formalize(string)
+    formalism = rule_1(formalism)
     formalism = rule_1(formalism)
     #formalism = rule_2(formalism, string)
     formalism1 = rule_2(formalism, string)
