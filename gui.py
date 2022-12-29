@@ -37,7 +37,7 @@ def dialog():
         for line in f:       
             for word in line.split(): 
                 new_list.append(process(word))
-        new_string = ''.join(new_list)        
+        new_string = ' '.join(new_list)        
         label2.setText(new_string)
  
 
