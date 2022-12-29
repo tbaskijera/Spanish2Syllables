@@ -126,7 +126,7 @@ def rule_4(formalism, string):
         vowel2 = pattern_start+1
         offset = check_offset(formalism, pattern_start)
         v_pair = string[vowel1-offset] + string[vowel2-offset]
-        if v_pair!="ue" and v_pair in STRONG_STRONG_VOWEL_PAIRS:
+        if v_pair in STRONG_STRONG_VOWEL_PAIRS:
             formalism = re.sub("VV", "V-V", formalism, 1)
         else:
             formalism = re.sub("VV", "VV", formalism, 1)
@@ -227,6 +227,8 @@ def process(string):
     formalism = rule_8(formalism, string)
     if formalism[-4:] == "VCC\"" or formalism1[-4] == "VCC\"":
         formalism = additional_rule_2(formalism1, string)
+    formalism = rule_4(formalism, string)
+    formalism = rule_4(formalism, string)
     #print(formalism)
     deformalism = deformalize(formalism, string)
     # return formalism

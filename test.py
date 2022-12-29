@@ -1,11 +1,7 @@
+from matplotlib import pyplot as plt
 from algorithm import process
 import docx2txt
 import re
-
-# prvo procitat liniju po liniju
-# onda odvojit u dvije liste 
-# jedna lista primjer, druga lista odvojeno
-# na kraju usporedit process(primjer[1]) == odvojeno[1] 
 
 def convert_docx2txt(file):
     content_docx = docx2txt.process(file)
@@ -66,12 +62,25 @@ def create_two_list(list):
     return true_counter, list_syllables_compare
 
 
-def average(list):
-    return_tuple = create_two_list(list)
-    return (return_tuple[0]/(len(return_tuple[1])))*100
+def average_graph(list):
+    lista = create_two_list(list)
+
+    # Creating dataset
+    corectVSincorrect = ['correct', 'incorrect']
+    data = [lista[0], (len(lista[1])-lista[0])]
+    # Creating plot
+    fig = plt.figure(figsize =(10, 7))
+    ax = fig.add_subplot()
+    ax.pie(data, labels = corectVSincorrect, colors=['green', 'red'], shadow = "True", explode = [0.1, 0.0], autopct = '%.1f%%')
+    ax.set_title("A graph of correctly separated words for the first test")
+    plt.legend(title = "Legend", loc = "best")
+    # show plot
+    plt.show()
+
+    return (lista[0]/(len(lista[1])))*100
 
 
 convert_docx2txt('SPANISH_primjeri.docx')
 delete_blank_line('output.txt')
 split_list = split_element_from_list()
-print("Postotak točnosti je:", round(average(split_list), 4))
+print("Postotak točnosti je:", round(average_graph(split_list), 4))
