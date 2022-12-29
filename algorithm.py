@@ -225,8 +225,9 @@ def process(string):
     formalism = rule_6(formalism, string)
     formalism = rule_7(formalism, string)
     formalism = rule_8(formalism, string)
-    if formalism[-4:] == "VCC\"" or formalism1[-4] == "VCC\"":
-        formalism = additional_rule_2(formalism1, string)
+    if len(formalism)>3 or len(formalism1)>3:
+        if formalism[-4:] == "VCC\"" or formalism1[-4] == "VCC\"" or formalism[-3:] == "VCC" or formalism1[-3] == "VCC":
+            formalism = additional_rule_2(formalism1, string)
     formalism = rule_4(formalism, string)
     formalism = rule_4(formalism, string)
     #print(formalism)
