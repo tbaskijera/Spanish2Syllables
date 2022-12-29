@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 from algorithm import process
+from tabulate import tabulate
 import docx2txt
 import re
 
@@ -59,13 +60,18 @@ def create_two_list(list):
             true_counter += 1
         else:
             print("Krivi je:", list_syllables[i], " --- ", list_syllables_compare[i])
-    return true_counter, list_syllables_compare
+    return true_counter, list_syllables_compare, list_syllables, list_words_for_test
 
 
-def average_graph(list):
-    lista = create_two_list(list)
+def save_table(table):
+    with open('table.txt', 'w', encoding='utf-8') as f:
+        f.write(table)
 
-    # Creating dataset
+
+def average_graph(lists):
+    lista = create_two_list(lists)
+
+    # Creating pie chart
     corectVSincorrect = ['correct', 'incorrect']
     data = [lista[0], (len(lista[1])-lista[0])]
     # Creating plot
@@ -76,6 +82,18 @@ def average_graph(list):
     plt.legend(title = "Legend", loc = "best")
     # show plot
     plt.show()
+
+    # Create table in terminal
+    newList=[]
+    lista3 = lista[3]
+    lista2 = lista[2]
+    lista1 = lista[1]
+    for i in range(0, len(lista3)):
+        newList.append([lista3[i], lista2[i], lista1[i]])
+    header = ["Word", "Word2Syllables", "Correct Word2Syllables"]
+    table = tabulate(newList, headers=header, tablefmt="fancy_grid")
+    print(table)
+    save_table(table)
 
     return (lista[0]/(len(lista[1])))*100
 
