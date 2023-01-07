@@ -22,14 +22,6 @@ test_list = ["casa", "oprimo", "obrero",  "aflojar", "cafre", "hablando", "agran
             "ruidoso", "triunfante", "bioinformática", "radioisótopo", "asociáis", "buey", "había", "país", "reúno"]
 
 
-def is_vowel(char):
-    return char == 'V'
-
-
-def is_consonant(char):
-    return char == 'C'
-
-
 def check_offset(string, point):
     count = 0
     for i in range(point):
@@ -61,19 +53,6 @@ def deformalize(string1, string2):
             br += 1
     deformalized_string = ''.join(list_of_char)
     return deformalized_string
-
-
-"""
-def rule_1(formalism):
-    formatted = ""
-    for count, letter in enumerate(formalism):
-        if is_consonant(letter) and count not in [0, 1]:
-            if (is_vowel(formalism[count-1]) and is_vowel(formalism[count+1])):
-                formatted += '-' + letter
-        else:
-            formatted += letter
-    return formatted
-"""
 
 
 def rule_1(formalism):
@@ -171,9 +150,10 @@ def rule_7(formalism, string):
         pattern_start = object.start()
         vowel1 = pattern_start
         vowel2 = pattern_start+1
+        vowel3 = pattern_start+2
         offset = check_offset(formalism, pattern_start)
-        v_pair = string[vowel1-offset] + string[vowel2-offset]
-        if v_pair in WEAK_STRONG_WEAK_VOWEL_TRIFTONG:
+        v_triftong = string[vowel1-offset] + string[vowel2-offset] + string[vowel3-offset]
+        if v_triftong in WEAK_STRONG_WEAK_VOWEL_TRIFTONG:
             formalism = re.sub("VVV", "VVV", formalism, 1)
     return formalism
 
@@ -228,25 +208,10 @@ def process(string):
     if len(formalism)>3 or len(formalism1)>3:
         if formalism[-4:] == "VCC\"" or formalism1[-4] == "VCC\"" or formalism[-3:] == "VCC" or formalism1[-3] == "VCC":
             formalism = additional_rule_2(formalism1, string)
+            formalism = additional_rule_2(formalism, string)
     formalism = rule_4(formalism, string)
     formalism = rule_4(formalism, string)
     #print(formalism)
     deformalism = deformalize(formalism, string)
     # return formalism
     return deformalism
-
-
-# def test(list):
-#     for item in list:
-#         print("procesira se ", item, ": ")
-#         process(item)
-
-# test(test_list)
-
-
-# def input_text():
-#     text = input("Unesi tekst koji želiš rastaviti na slogove: ")
-#     return text
-
-# process(input_text())
-

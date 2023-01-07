@@ -31,7 +31,7 @@ def input_text():
 
 def dialog():
     new_list = []
-    file, check = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "Text Files (*.txt)")
+    file, check = QFileDialog.getOpenFileName(None, "Open file", "", "Text Files (*.txt)")
     if check:
         f = open(file, 'r', encoding='utf-8')
         for line in f:       

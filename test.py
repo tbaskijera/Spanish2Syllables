@@ -89,8 +89,8 @@ def average_graph(lists):
     lista2 = lista[2]
     lista1 = lista[1]
     for i in range(0, len(lista3)):
-        newList.append([lista3[i], lista2[i], lista1[i]])
-    header = ["Word", "Word2Syllables", "Correct Word2Syllables"]
+        newList.append([i+1, lista3[i], lista2[i], lista1[i]])
+    header = ["No.", "Word", "Word2Syllables", "Correct Word2Syllables"]
     table = tabulate(newList, headers=header, tablefmt="fancy_grid")
     print(table)
     save_table(table)
